@@ -3,6 +3,7 @@
 #include "conectorC/include/mysql.h"
 
 void listClasses(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row);
+void registeringClasses(MYSQL *mysql);
 
 int main() {
     MYSQL *mysql;
@@ -11,7 +12,12 @@ int main() {
     mysql = mysql_init(NULL);
     mysql_real_connect(mysql, "localhost", "root", "", "dados_escolares", 0, NULL, 0);
     
+    
     listClasses(mysql, result, row);
+
+    registeringClasses(mysql);
+
+
     return 0;
 }
 
@@ -30,6 +36,29 @@ void listClasses(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row){
         printf("\n");
     }
     mysql_free_result(result);
-    mysql_close(mysql);
+
 }
->>>>>>> Stashed changes
+
+void registeringClasses(MYSQL *mysql) {
+    char className[30];
+    int schoolYear;
+    char query[200];
+
+    printf("Turma: ");
+    fgets(className, sizeof(className), stdin);
+    className[strcspn(className, "\n")] = '\0'; 
+
+    printf("Ano Letivo: ");
+    scanf("%i", &schoolYear);
+    getchar(); 
+
+    sprintf(query, "INSERT INTO turmas (nome_turma, ano_letivo) VALUES ('%s', '%i')", className, schoolYear);
+    
+
+    if (mysql_query(mysql, query) != 0) {
+        fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
+        exit(1);
+    }
+
+    printf("Inserção realizada com sucesso!\n");
+}
