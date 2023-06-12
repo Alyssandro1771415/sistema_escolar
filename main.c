@@ -4,11 +4,16 @@
 #include <winsock2.h>
 #include "conectorC/include/mysql.h"
 
+struct aluno{
+    int aluno_id;
+    char aluno_nome[100];
+    int turma_id;
+};
+
 int main()
 {
     
-    mysql_init(NULL);
-    printf("oi");
+    
 
     return 0;
 }
