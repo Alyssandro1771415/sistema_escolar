@@ -5,7 +5,7 @@
 void listClasses(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8]);
 void registeringClasses(MYSQL *mysql);
 void listStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8], int classID);
-void registeringStudents(MYSQL *mysql, int alunoID, char nomeAluno[100]);
+void registeringStudents(MYSQL *mysql, char nomeAluno[100], int turmaID);
 
 int main()
 {
@@ -15,11 +15,13 @@ int main()
     mysql = mysql_init(NULL);
     mysql_real_connect(mysql, "localhost", "root", "", "dados_escolares", 0, NULL, 0);
 
-    listClasses(mysql, result, row, "noite"); //Tem que mudar aqui para pegar o turno selecionado
+    //listClasses(mysql, result, row, "noite"); //Tem que mudar aqui para pegar o turno selecionado
 
-    registeringClasses(mysql);
+    //registeringClasses(mysql);
 
-    listStudents(mysql, result, row, "noite", 1);
+    //listStudents(mysql, result, row, "noite", 1);
+
+    registeringStudents(mysql, "Alyssandro Dyogo Ramos", 3);
 
     return 0;
 }
@@ -69,7 +71,7 @@ void registeringClasses(MYSQL *mysql)
 
     if (mysql_query(mysql, query) != 0)
     {
-        fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
+        fprintf(stderr, "Erro ao executar o registro: %s\n", mysql_error(mysql));
         exit(1);
     }
 
@@ -98,8 +100,18 @@ void listStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8],
     mysql_free_result(result);
 }
 
-void registeringStudents(MYSQL *mysql, int alunoID, char nomeAluno[100]){
+void registeringStudents(MYSQL *mysql, char nomeAluno[100], int turmaID){
 
+    char query[200];
 
+    sprintf(query, "INSERT INTO aluno (nome_aluno, turma_id) VALUES ('%s', '%i')", nomeAluno, turmaID);
+
+    if(mysql_query(mysql, query) != 0){
+
+        fprintf(stderr, "Erro ao executar o registro: %s\n", mysql_error(mysql));
+        exit(1);
+    }
+
+    printf("Inserção realizada com sucesso!\n");
 
 }
