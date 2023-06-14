@@ -5,6 +5,7 @@
 void listClasses(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8]);
 void registeringClasses(MYSQL *mysql);
 void listStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8], int classID);
+void registeringStudents(MYSQL *mysql, int alunoID, char nomeAluno[100]);
 
 int main()
 {
@@ -95,4 +96,10 @@ void listStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8],
         printf("|");
     }
     mysql_free_result(result);
+}
+
+void registeringStudents(MYSQL *mysql, int alunoID, char nomeAluno[100]){
+
+
+
 }
