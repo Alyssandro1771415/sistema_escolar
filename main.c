@@ -110,7 +110,8 @@ void manha()
         {
         case 1:
             system("cls");
-            
+            listClasses(mysql, result, row, "manha");
+            system("pause");
             break;
         case 2:
             system("cls");
@@ -144,7 +145,7 @@ void tarde()
         {
         case 1:
             system("cls");
-
+            listClasses(mysql, result, row, "tarde");
             system("pause");
             break;
         case 2:
@@ -179,7 +180,7 @@ void noite()
         {
         case 1:
             system("cls");
-
+            listClasses(mysql, result, row, "noite");
             system("pause");
             break;
         case 2:
@@ -214,7 +215,7 @@ void integral()
         {
         case 1:
             system("cls");
-
+            listClasses(mysql, result, row, "integral");
             system("pause");
             break;
         case 2:
@@ -299,23 +300,26 @@ void procurar()
 void listClasses(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8])
 {
     char query[200];
-    
+
     sprintf(query, "SELECT nome_turma FROM turmas WHERE turno = '%s'", shift);
 
     mysql_query(mysql, query);
     result = mysql_store_result(mysql);
     int num_fields = mysql_num_fields(result);
 
+    printf("| Classes |\n");
+    printf("-----------\n");
+
     while ((row = mysql_fetch_row(result)))
     {
         for (int i = 0; i < num_fields; i++)
         {
-            printf("| %s ", row[i] ? row[i] : "NULL");
-        }
-        printf("|");
+            printf("| %s |", row[i] ? row[i] : "NULL");
+        }        
+
+        printf("\n");
     }
     mysql_free_result(result);
-    
 }
 
 void registeringClasses(MYSQL *mysql)
