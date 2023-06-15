@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-<<<<<<< HEAD
 #include <string.h>
 #include <time.h>
 #include "conectorC/include/mysql.h"
@@ -13,27 +12,23 @@ void noite();
 void integral();
 void cadastrar();
 void procurar();
-
-int opcao_tu;
-=======
-#include "conectorC/include/mysql.h"
-
 void listClasses(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8]);
 void registeringClasses(MYSQL *mysql);
 void listStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8], int classID);
 void registeringStudents(MYSQL *mysql, char nomeAluno[100], int turmaID);
->>>>>>> Alyssandro
+
+int opcao_tu;
+MYSQL *mysql;
+MYSQL_RES *result;
+MYSQL_ROW row;
 
 int main()
 {
-    MYSQL *mysql;
-    MYSQL_RES *result;
-    MYSQL_ROW row;
+
     mysql = mysql_init(NULL);
     mysql_real_connect(mysql, "localhost", "root", "", "dados_escolares", 0, NULL, 0);
 
     
-<<<<<<< HEAD
     system("color 9f");
 	int opcao_tp;
 	do{
@@ -79,13 +74,10 @@ int main()
 				break;
 		}
 	}while(opcao_tp != 2);
-=======
->>>>>>> Alyssandro
 
     return 0;
 }
 
-<<<<<<< HEAD
 
 void showdata()
 {
@@ -284,7 +276,7 @@ void procurar(){
 		}
 	}while(opcao_p != 3);
 }
-=======
+
 void listClasses(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8])
 {
 
@@ -374,4 +366,3 @@ void registeringStudents(MYSQL *mysql, char nomeAluno[100], int turmaID){
     printf("Inserção realizada com sucesso!\n");
 
 }
->>>>>>> Alyssandro
