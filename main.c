@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <winsock2.h>
 #include "conectorC/include/mysql.h"
+#include <mysql/mysql.h>
 
 void exportarDadosEstudante();
 
