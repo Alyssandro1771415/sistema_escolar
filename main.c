@@ -15,13 +15,7 @@ int main()
     mysql = mysql_init(NULL);
     mysql_real_connect(mysql, "localhost", "root", "", "dados_escolares", 0, NULL, 0);
 
-    //listClasses(mysql, result, row, "noite"); //Tem que mudar aqui para pegar o turno selecionado
-
-    //registeringClasses(mysql);
-
-    //listStudents(mysql, result, row, "noite", 1);
-
-    registeringStudents(mysql, "Alyssandro Dyogo Ramos", 3);
+    
 
     return 0;
 }
