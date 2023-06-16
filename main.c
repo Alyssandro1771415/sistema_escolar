@@ -8,30 +8,28 @@ MYSQL *mysql;
 MYSQL_RES *result;
 MYSQL_ROW row;
 
-void exportarDadosEstudante(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100]);
+void exportarDadosEstudante(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100], int semester);
 
 int main(){
 
     mysql = mysql_init(NULL);
     mysql_real_connect(mysql, "localhost", "root", "", "dados_escolares", 0, NULL, 0);
 
-    
     const char *nomeTabela = "nome_da_tabela";
     const char *nomeEstudante = "nome_do_estudante";
 
-    exportarDadosEstudante(mysql, result, row, "Alyssandro 3.1415");
+    exportarDadosEstudante(mysql, result, row, "Alyssandro Dyogo Ramos", 1);
 
     return 0;
 }
 
-void exportarDadosEstudante(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100]) {
+void exportarDadosEstudante(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100], int semester) {
     char query[200];
     int classID;
     int studentID;
     char className[20];
     char shift[8];
     float grades[4];
-    float media[4];
 
     sprintf(query, "SELECT turma_id FROM aluno WHERE nome_aluno = '%s'", studentName);
     if (mysql_query(mysql, query)) {
@@ -89,7 +87,7 @@ void exportarDadosEstudante(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char
 
     sprintf(query, "SELECT aluno_id FROM aluno WHERE nome_aluno = '%s'", studentName);
 
-        if (mysql_query(mysql, query)) {
+    if (mysql_query(mysql, query)) {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
         return;
     }
@@ -115,24 +113,62 @@ void exportarDadosEstudante(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char
     }
 
     
-    sprintf(query, "SELECT nota1, nota2, nota3, nota4 FROM notas where aluno_id = '%i'", studentID);
+    sprintf(query, "SELECT nota1, nota2, nota3, nota4 FROM notas where aluno_id = '%s' and semestre = '%i'", row[0], semester);
 
-    //--------------------------------------------------------------------
+    if (mysql_query(mysql, query)) {
+        fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
+        return;
+    }
 
-    char nomeArquivo[100];
-    sprintf(nomeArquivo, "%s.txt", studentName);
-    FILE *arquivo = fopen(nomeArquivo, "w");
-    if (arquivo == NULL) {
-        fprintf(stderr, "Erro ao abrir o arquivo %s para escrita.\n", nomeArquivo);
+    result = mysql_store_result(mysql);
+    if (result == NULL) {
+        fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
+        return;
+    }
+
+    row = mysql_fetch_row(result);
+    if (row == NULL) {
+        fprintf(stderr, "Dados não obtidos.\n");
         mysql_free_result(result);
         mysql_close(mysql);
         return;
     }
 
-    for (unsigned int i = 0; i < mysql_num_fields(result); i++) {
-        fprintf(arquivo, "%s\t", row[i]);
+    for (int i = 0; i < 4; i++) {
+        sscanf(row[i], "%f", &grades[i]);
     }
 
-    fclose(arquivo);
     mysql_free_result(result);
+
+    FILE *arquivo = fopen("boletim.txt", "w");
+    if (arquivo == NULL) {
+        fprintf(stderr, "Erro ao abrir o arquivo para escrita.\n");
+        mysql_close(mysql);
+        return;
+    }
+
+    fprintf(arquivo, "      Boletim Escolar\n");
+    fprintf(arquivo, "----------------------------\n\n");
+
+    fprintf(arquivo, "Nome: %s\n", studentName);
+    fprintf(arquivo, "----------------------------\n");
+
+    fprintf(arquivo, "Turma: %s\n", className);
+    fprintf(arquivo, "----------------------------\n");
+
+    fprintf(arquivo, "Turno: %s\n", shift);
+    fprintf(arquivo, "----------------------------\n\n");
+    fprintf(arquivo, "============================\n");
+    fprintf(arquivo, "Semestre:\n");
+    fprintf(arquivo, "============================\n");
+    fprintf(arquivo, "%d° Semestre |\n", semester);
+    fprintf(arquivo, "----------------------------   |\n");
+
+    fprintf(arquivo, "%.2f                           |\n", grades[0]);
+    fprintf(arquivo, "%.2f                           |\n", grades[1]);
+    fprintf(arquivo, "%.2f                           |\n", grades[2]);
+    fprintf(arquivo, "%.2f                           |\n", grades[3]);
+
+    fclose(arquivo);
+    mysql_close(mysql);
 }
