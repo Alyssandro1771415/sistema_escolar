@@ -14,7 +14,7 @@ void procurar();
 void listClasses(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8]);
 void registeringClasses(MYSQL *mysql);
 void listStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8], int classID);
-void registeringStudents(MYSQL *mysql, char nomeAluno[100], int turmaID);
+void registeringStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row,char shift[8]);
 
 int opcao_tu;
 MYSQL *mysql;
@@ -250,12 +250,12 @@ void cadastrar()
         {
         case 1:
             system("cls");
-
+            registeringStudents(mysql, result, row, "noite");
             system("pause");
             break;
         case 2:
             system("cls");
-
+            registeringClasses(mysql);
             system("pause");
             break;
         case 3:
@@ -374,16 +374,37 @@ void listStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8],
     mysql_free_result(result);
 }
 
-void registeringStudents(MYSQL *mysql, char nomeAluno[100], int turmaID)
+void registeringStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8])
 {
-
+    char nomeAluno[100];
+    char turma[20];
+    int turmaID;
     char query[200];
+
+    printf("Insira o nome completo do aluno: \n");
+    scanf(" %[^\n]", nomeAluno);
+    
+    printf("Insira a série do aluno: \n");
+    scanf(" %[^\n]", turma);
+
+    sprintf(query, "SELECT turma_id FROM TURMAS WHERE nome_turma = '%s' AND turno = '%s'", turma, shift);
+
+    mysql_query(mysql, query);
+    result = mysql_store_result(mysql);
+
+    if (result != NULL)
+    {
+        if ((row = mysql_fetch_row(result)) != NULL)
+        {
+            sscanf(row[0], "%d", &turmaID);
+        }
+        mysql_free_result(result);
+    }
 
     sprintf(query, "INSERT INTO aluno (nome_aluno, turma_id) VALUES ('%s', '%i')", nomeAluno, turmaID);
 
     if (mysql_query(mysql, query) != 0)
     {
-
         fprintf(stderr, "Erro ao executar o registro: %s\n", mysql_error(mysql));
         exit(1);
     }
