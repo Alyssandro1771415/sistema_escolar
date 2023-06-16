@@ -12,11 +12,12 @@ void integral();
 void cadastrar();
 void procurar();
 void listClasses(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8]);
-void registeringClasses(MYSQL *mysql);
+void registeringClasses(MYSQL *mysql, char shift[8]);
 void listStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8], int classID);
 void registeringStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row,char shift[8]);
 
 int opcao_tu;
+char shift[8];
 MYSQL *mysql;
 MYSQL_RES *result;
 MYSQL_ROW row;
@@ -52,18 +53,23 @@ int main()
                 printf("\t\t\t\t\t\t==========================\n");
                 printf("\t\t\t\t\t\tescolha uma opcao: ");
                 scanf("%d", &opcao_tu);
+
                 switch (opcao_tu)
                 {
                 case 1:
+                    strcpy(shift, "manha");
                     manha();
                     break;
                 case 2:
+                    strcpy(shift, "tarde");
                     tarde();
                     break;
                 case 3:
+                    strcpy(shift, "noite");
                     noite();
                     break;
                 case 4:
+                    strcpy(shift, "integral");
                     integral();
                     break;
                 case 5:
@@ -250,12 +256,12 @@ void cadastrar()
         {
         case 1:
             system("cls");
-            registeringStudents(mysql, result, row, "noite");
+            registeringStudents(mysql, result, row, shift);
             system("pause");
             break;
         case 2:
             system("cls");
-            registeringClasses(mysql);
+            registeringClasses(mysql, shift);
             system("pause");
             break;
         case 3:
@@ -322,24 +328,18 @@ void listClasses(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8])
     mysql_free_result(result);
 }
 
-void registeringClasses(MYSQL *mysql)
+void registeringClasses(MYSQL *mysql, char shift[8])
 {
     char className[30];
     int schoolYear;
     char query[200];
-    char shift[8];
 
-    printf("Turma: ");
-    fgets(className, sizeof(className), stdin);
-    className[strcspn(className, "\n")] = '\0';
+    printf("nsira o nome da turma: \n");
+    scanf(" %[^\n]", className);
 
     printf("Ano Letivo: ");
     scanf("%i", &schoolYear);
     getchar();
-
-    printf("Turno: ");
-    fgets(shift, sizeof(shift), stdin);
-    shift[strcspn(shift, "\n")] = '\0';
 
     sprintf(query, "INSERT INTO turmas (nome_turma, ano_letivo, turno) VALUES ('%s', '%i', '%s')", className, schoolYear, shift);
 
@@ -376,18 +376,18 @@ void listStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8],
 
 void registeringStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8])
 {
-    char nomeAluno[100];
-    char turma[20];
-    int turmaID;
+    char studentName[100];
+    char class[20];
+    int classID;
     char query[200];
 
     printf("Insira o nome completo do aluno: \n");
-    scanf(" %[^\n]", nomeAluno);
+    scanf(" %[^\n]", studentName);
     
     printf("Insira a série do aluno: \n");
-    scanf(" %[^\n]", turma);
+    scanf(" %[^\n]", class);
 
-    sprintf(query, "SELECT turma_id FROM TURMAS WHERE nome_turma = '%s' AND turno = '%s'", turma, shift);
+    sprintf(query, "SELECT turma_id FROM turmas WHERE nome_turma = '%s' AND turno = '%s'", class, shift);
 
     mysql_query(mysql, query);
     result = mysql_store_result(mysql);
@@ -396,12 +396,12 @@ void registeringStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char sh
     {
         if ((row = mysql_fetch_row(result)) != NULL)
         {
-            sscanf(row[0], "%d", &turmaID);
+            sscanf(row[0], "%d", &classID);
         }
         mysql_free_result(result);
     }
 
-    sprintf(query, "INSERT INTO aluno (nome_aluno, turma_id) VALUES ('%s', '%i')", nomeAluno, turmaID);
+    sprintf(query, "INSERT INTO aluno (nome_aluno, turma_id) VALUES ('%s', '%i')", studentName, classID);
 
     if (mysql_query(mysql, query) != 0)
     {
