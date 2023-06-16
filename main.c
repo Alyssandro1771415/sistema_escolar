@@ -411,3 +411,4 @@ void registeringStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char sh
 
     printf("Inserção realizada com sucesso!\n");
 }
+
