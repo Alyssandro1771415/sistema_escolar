@@ -8,7 +8,7 @@ MYSQL *mysql;
 MYSQL_RES *result;
 MYSQL_ROW row;
 
-void exportarDadosEstudante(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100], int semester);
+void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100], int semester);
 
 int main()
 {
@@ -19,12 +19,12 @@ int main()
     const char *nomeTabela = "nome_da_tabela";
     const char *nomeEstudante = "nome_do_estudante";
 
-    exportarDadosEstudante(mysql, result, row, "Alyssandro Dyogo Ramos", 1);
+    gerarBoletim(mysql, result, row, "Alyssandro Dyogo Ramos", 1);
 
     return 0;
 }
 
-void exportarDadosEstudante(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100], int semester)
+void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100], int semester)
 {
     char query[200];
     int classID;
