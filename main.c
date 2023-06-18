@@ -8,7 +8,7 @@ MYSQL *mysql;
 MYSQL_RES *result;
 MYSQL_ROW row;
 
-void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100], int semester);
+void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100]);
 
 int main()
 {
@@ -24,7 +24,7 @@ int main()
     return 0;
 }
 
-void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100], int semester)
+void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100])
 {
     char query[200];
     int classID;
