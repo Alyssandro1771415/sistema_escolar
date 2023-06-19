@@ -19,7 +19,7 @@ int main()
     const char *nomeTabela = "nome_da_tabela";
     const char *nomeEstudante = "nome_do_estudante";
 
-    gerarBoletim(mysql, result, row, "Alyssandro Dyogo Ramos", 1);
+    gerarBoletim(mysql, result, row, "Alyssandro Dyogo Ramos");
 
     return 0;
 }
@@ -59,7 +59,7 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
 
     if (result != NULL)
     {
-        sscanf(row[0], "%d", &classID);
+        sscanf(row[0], "%i", &classID);
         mysql_free_result(result);
     }
 
@@ -125,13 +125,13 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     }
 
     sprintf(query, "SELECT nota1, nota2, nota3, nota4 FROM notas where aluno_id = '%i' and semestre = '1'", studentID);
-
+    
     if (mysql_query(mysql, query))
     {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
         return;
     }
-
+    
     result = mysql_store_result(mysql);
     if (result == NULL)
     {
@@ -152,7 +152,7 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     {
         sscanf(row[i], "%f", &grades[i]);
     }
-
+    
     sprintf(query, "SELECT nota1, nota2, nota3, nota4 FROM notas where aluno_id = '%i' and semestre = '2'", studentID);
 
     if (mysql_query(mysql, query))
@@ -173,7 +173,6 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     {
         fprintf(stderr, "Dados não obtidos.\n");
         mysql_free_result(result);
-        mysql_close(mysql);
         return;
     }
 
@@ -181,7 +180,7 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     {
         sscanf(row[i], "%f", &grades[i + 4]);
     }
-
+ 
     sprintf(query, "SELECT media FROM media WHERE aluno_id = '%i' AND semestre = '1'", studentID);
 
     if (mysql_query(mysql, query))
@@ -202,14 +201,10 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     {
         fprintf(stderr, "Dados não obtidos.\n");
         mysql_free_result(result);
-        mysql_close(mysql);
         return;
     }
 
-    for (int i = 0; i < 1; i++)
-    {
-        sscanf(row[i], "%f", &averages[i]);
-    }
+    sscanf(row[0], "%f", &averages[0]);
 
     sprintf(query, "SELECT media FROM media WHERE aluno_id = '%i' AND semestre = '2'", studentID);
 
@@ -239,7 +234,6 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
 
     mysql_free_result(result);
 
-    mysql_free_result(result);
 
     FILE *arquivo = fopen("boletim.txt", "w");
     if (arquivo == NULL)
@@ -250,7 +244,7 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     }
 
     fprintf(arquivo, "      Boletim Escolar\n");
-    fprintf(arquivo, "----------------------------\n\n");
+    fprintf(arquivo, "----------------------------\n");
 
     fprintf(arquivo, "Nome: %s\n", studentName);
     fprintf(arquivo, "----------------------------\n");
@@ -261,10 +255,8 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     fprintf(arquivo, "Turno: %s\n", shift);
     fprintf(arquivo, "----------------------------\n\n");
     fprintf(arquivo, "============================\n");
-    fprintf(arquivo, "Semestre:\n");
+    fprintf(arquivo, "1° Semestre:\n");
     fprintf(arquivo, "============================\n");
-    fprintf(arquivo, "1° Semestre\n");
-    fprintf(arquivo, "------------NOTAS--------------|\n");
 
     fprintf(arquivo, "%.2f                           |\n", grades[0]);
     fprintf(arquivo, "%.2f                           |\n", grades[1]);
@@ -273,7 +265,9 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     fprintf(arquivo, "------------MEDIA--------------|\n");
     fprintf(arquivo, "%.2f                           |\n\n", averages[0]);
 
-    fprintf(arquivo, "2° Semestre\n");
+    fprintf(arquivo, "============================\n");
+    fprintf(arquivo, "2° Semestre:\n");
+    fprintf(arquivo, "============================\n");
     fprintf(arquivo, "------------NOTAS--------------|\n");
     fprintf(arquivo, "%.2f                           |\n", grades[4]);
     fprintf(arquivo, "%.2f                           |\n", grades[5]);
@@ -284,4 +278,5 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
 
     fclose(arquivo);
     mysql_close(mysql);
+
 }
