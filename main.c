@@ -7,8 +7,7 @@
 int main()
 {
     
-    mysql_init(NULL);
-    printf("oi");
+    
 
     return 0;
 }
