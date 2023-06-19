@@ -38,14 +38,12 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     if (mysql_query(mysql, query))
     {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
-        return;
     }
 
     result = mysql_store_result(mysql);
     if (result == NULL)
     {
         fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
-        return;
     }
 
     row = mysql_fetch_row(result);
@@ -54,7 +52,6 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
         fprintf(stderr, "Turma não encontrada.\n");
         mysql_free_result(result);
         mysql_close(mysql);
-        return;
     }
 
     if (result != NULL)
@@ -68,14 +65,12 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     if (mysql_query(mysql, query))
     {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
-        return;
     }
 
     result = mysql_store_result(mysql);
     if (result == NULL)
     {
         fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
-        return;
     }
 
     row = mysql_fetch_row(result);
@@ -84,7 +79,6 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
         fprintf(stderr, "Dados não obtidos.\n");
         mysql_free_result(result);
         mysql_close(mysql);
-        return;
     }
 
     if (result != NULL)
@@ -99,14 +93,12 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     if (mysql_query(mysql, query))
     {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
-        return;
     }
 
     result = mysql_store_result(mysql);
     if (result == NULL)
     {
         fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
-        return;
     }
 
     row = mysql_fetch_row(result);
@@ -115,7 +107,6 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
         fprintf(stderr, "Dados não obtidos.\n");
         mysql_free_result(result);
         mysql_close(mysql);
-        return;
     }
 
     if (result != NULL)
@@ -129,14 +120,12 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     if (mysql_query(mysql, query))
     {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
-        return;
     }
     
     result = mysql_store_result(mysql);
     if (result == NULL)
     {
         fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
-        return;
     }
 
     row = mysql_fetch_row(result);
@@ -145,9 +134,8 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
         fprintf(stderr, "Dados não obtidos.\n");
         mysql_free_result(result);
         mysql_close(mysql);
-        return;
     }
-
+    
     for (int i = 0; i < 4; i++)
     {
         sscanf(row[i], "%f", &grades[i]);
@@ -158,14 +146,12 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     if (mysql_query(mysql, query))
     {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
-        return;
     }
 
     result = mysql_store_result(mysql);
     if (result == NULL)
     {
         fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
-        return;
     }
 
     row = mysql_fetch_row(result);
@@ -173,27 +159,26 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     {
         fprintf(stderr, "Dados não obtidos.\n");
         mysql_free_result(result);
-        return;
     }
-
+    //---------------------Bug estranho---------------------------
+    printf("%s %s", className, shift);
     for (int i = 0; i < 4; i++)
     {
         sscanf(row[i], "%f", &grades[i + 4]);
     }
- 
+    printf("%s %s", className, shift);
+    //------------------------------------------------------------
     sprintf(query, "SELECT media FROM media WHERE aluno_id = '%i' AND semestre = '1'", studentID);
 
     if (mysql_query(mysql, query))
     {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
-        return;
     }
 
     result = mysql_store_result(mysql);
     if (result == NULL)
     {
         fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
-        return;
     }
 
     row = mysql_fetch_row(result);
@@ -201,7 +186,6 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     {
         fprintf(stderr, "Dados não obtidos.\n");
         mysql_free_result(result);
-        return;
     }
 
     sscanf(row[0], "%f", &averages[0]);
@@ -211,14 +195,12 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     if (mysql_query(mysql, query))
     {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
-        return;
     }
 
     result = mysql_store_result(mysql);
     if (result == NULL)
     {
         fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
-        return;
     }
 
     row = mysql_fetch_row(result);
@@ -227,9 +209,8 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
         fprintf(stderr, "Dados não obtidos.\n");
         mysql_free_result(result);
         mysql_close(mysql);
-        return;
     }
-
+    
     sscanf(row[0], "%f", &averages[1]);
 
     mysql_free_result(result);
@@ -240,7 +221,6 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
     {
         fprintf(stderr, "Erro ao abrir o arquivo para escrita.\n");
         mysql_close(mysql);
-        return;
     }
 
     fprintf(arquivo, "      Boletim Escolar\n");
