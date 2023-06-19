@@ -9,6 +9,11 @@ MYSQL_RES *result;
 MYSQL_ROW row;
 
 void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100]);
+void obterTurmaID(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100], int *classID);
+void obterNomeTurno(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int classID, char className[20], char shift[8]);
+void obterAlunoID(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100], int *studentID);
+void obterNotas(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int studentID, float grades[8]);
+void obterMedias(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int studentID, float averages[2]);
 
 int main()
 {
@@ -24,203 +29,206 @@ int main()
     return 0;
 }
 
-void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100])
-{
+void obterTurmaID(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100], int *classID) {
     char query[200];
-    int classID;
-    int studentID;
-    char className[20];
-    char shift[8];
-    float grades[4];
-    float averages[2];
-
     sprintf(query, "SELECT turma_id FROM aluno WHERE nome_aluno = '%s'", studentName);
-    if (mysql_query(mysql, query))
-    {
+    if (mysql_query(mysql, query)) {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
+        return;
     }
 
     result = mysql_store_result(mysql);
-    if (result == NULL)
-    {
+    if (result == NULL) {
         fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
+        return;
     }
 
     row = mysql_fetch_row(result);
-    if (row == NULL)
-    {
+    if (row == NULL) {
         fprintf(stderr, "Turma não encontrada.\n");
         mysql_free_result(result);
         mysql_close(mysql);
+        return;
     }
 
-    if (result != NULL)
-    {
-        sscanf(row[0], "%i", &classID);
-        mysql_free_result(result);
-    }
+    sscanf(row[0], "%i", classID);
+    mysql_free_result(result);
+}
 
+void obterNomeTurno(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int classID, char className[20], char shift[8]) {
+    char query[200];
     sprintf(query, "SELECT nome_turma, turno FROM turmas WHERE turma_id = '%i'", classID);
-
-    if (mysql_query(mysql, query))
-    {
+    if (mysql_query(mysql, query)) {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
+        return;
     }
 
     result = mysql_store_result(mysql);
-    if (result == NULL)
-    {
+    if (result == NULL) {
         fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
+        return;
     }
 
     row = mysql_fetch_row(result);
-    if (row == NULL)
-    {
+    if (row == NULL) {
         fprintf(stderr, "Dados não obtidos.\n");
         mysql_free_result(result);
         mysql_close(mysql);
+        return;
     }
 
-    if (result != NULL)
-    {
-        strcpy(className, row[0]);
-        strcpy(shift, row[1]);
-        mysql_free_result(result);
-    }
+    strcpy(className, row[0]);
+    strcpy(shift, row[1]);
+    mysql_free_result(result);
+}
 
+void obterAlunoID(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100], int *studentID) {
+    char query[200];
     sprintf(query, "SELECT aluno_id FROM aluno WHERE nome_aluno = '%s'", studentName);
-
-    if (mysql_query(mysql, query))
-    {
+    if (mysql_query(mysql, query)) {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
+        return;
     }
 
     result = mysql_store_result(mysql);
-    if (result == NULL)
-    {
+    if (result == NULL) {
         fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
+        return;
     }
 
     row = mysql_fetch_row(result);
-    if (row == NULL)
-    {
+    if (row == NULL) {
         fprintf(stderr, "Dados não obtidos.\n");
         mysql_free_result(result);
         mysql_close(mysql);
+        return;
     }
 
-    if (result != NULL)
-    {
-        sscanf(row[0], "%d", &studentID);
-        mysql_free_result(result);
-    }
+    sscanf(row[0], "%d", studentID);
+    mysql_free_result(result);
+}
 
-    sprintf(query, "SELECT nota1, nota2, nota3, nota4 FROM notas where aluno_id = '%i' and semestre = '1'", studentID);
-    
-    if (mysql_query(mysql, query))
-    {
+void obterNotas(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int studentID, float grades[8]) {
+    char query[200];
+    sprintf(query, "SELECT nota1, nota2, nota3, nota4 FROM notas WHERE aluno_id = '%i' AND semestre = '1'", studentID);
+    if (mysql_query(mysql, query)) {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
+        return;
     }
-    
+
     result = mysql_store_result(mysql);
-    if (result == NULL)
-    {
+    if (result == NULL) {
         fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
+        return;
     }
 
     row = mysql_fetch_row(result);
-    if (row == NULL)
-    {
+    if (row == NULL) {
         fprintf(stderr, "Dados não obtidos.\n");
         mysql_free_result(result);
-        mysql_close(mysql);
+        return;
     }
-    
-    for (int i = 0; i < 4; i++)
-    {
+
+    for (int i = 0; i < 4; i++) {
         sscanf(row[i], "%f", &grades[i]);
     }
-    
-    sprintf(query, "SELECT nota1, nota2, nota3, nota4 FROM notas where aluno_id = '%i' and semestre = '2'", studentID);
 
-    if (mysql_query(mysql, query))
-    {
+    mysql_free_result(result);
+
+    sprintf(query, "SELECT nota1, nota2, nota3, nota4 FROM notas WHERE aluno_id = '%i' AND semestre = '2'", studentID);
+    if (mysql_query(mysql, query)) {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
+        return;
     }
 
     result = mysql_store_result(mysql);
-    if (result == NULL)
-    {
+    if (result == NULL) {
         fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
+        return;
     }
 
     row = mysql_fetch_row(result);
-    if (row == NULL)
-    {
+    if (row == NULL) {
         fprintf(stderr, "Dados não obtidos.\n");
         mysql_free_result(result);
+        return;
     }
-    //---------------------Bug estranho---------------------------
-    printf("%s %s", className, shift);
-    for (int i = 0; i < 4; i++)
-    {
+
+    for (int i = 0; i < 4; i++) {
         sscanf(row[i], "%f", &grades[i + 4]);
     }
-    printf("%s %s", className, shift);
-    //------------------------------------------------------------
-    sprintf(query, "SELECT media FROM media WHERE aluno_id = '%i' AND semestre = '1'", studentID);
 
-    if (mysql_query(mysql, query))
-    {
+    mysql_free_result(result);
+}
+
+void obterMedias(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int studentID, float averages[2]) {
+    char query[200];
+    sprintf(query, "SELECT media FROM media WHERE aluno_id = '%i' AND semestre = '1'", studentID);
+    if (mysql_query(mysql, query)) {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
+        return;
     }
 
     result = mysql_store_result(mysql);
-    if (result == NULL)
-    {
+    if (result == NULL) {
         fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
+        return;
     }
 
     row = mysql_fetch_row(result);
-    if (row == NULL)
-    {
+    if (row == NULL) {
         fprintf(stderr, "Dados não obtidos.\n");
         mysql_free_result(result);
+        return;
     }
 
     sscanf(row[0], "%f", &averages[0]);
 
-    sprintf(query, "SELECT media FROM media WHERE aluno_id = '%i' AND semestre = '2'", studentID);
+    mysql_free_result(result);
 
-    if (mysql_query(mysql, query))
-    {
+    sprintf(query, "SELECT media FROM media WHERE aluno_id = '%i' AND semestre = '2'", studentID);
+    if (mysql_query(mysql, query)) {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
+        return;
     }
 
     result = mysql_store_result(mysql);
-    if (result == NULL)
-    {
+    if (result == NULL) {
         fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
+        return;
     }
 
     row = mysql_fetch_row(result);
-    if (row == NULL)
-    {
+    if (row == NULL) {
         fprintf(stderr, "Dados não obtidos.\n");
         mysql_free_result(result);
-        mysql_close(mysql);
+        return;
     }
-    
+
     sscanf(row[0], "%f", &averages[1]);
 
     mysql_free_result(result);
+}
 
+void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentName[100]) {
+    float grades[8];
+    float averages[2];
+    char className[20];
+    char shift[8];
+    int classID;
+    int studentID;
+
+    obterTurmaID(mysql, result, row, studentName, &classID);
+    obterNomeTurno(mysql, result, row, classID, className, shift);
+    obterAlunoID(mysql, result, row, studentName, &studentID);
+    obterNotas(mysql, result, row, studentID, grades);
+    obterMedias(mysql, result, row, studentID, averages);
 
     FILE *arquivo = fopen("boletim.txt", "w");
-    if (arquivo == NULL)
-    {
+    if (arquivo == NULL) {
         fprintf(stderr, "Erro ao abrir o arquivo para escrita.\n");
         mysql_close(mysql);
+        return;
     }
 
     fprintf(arquivo, "      Boletim Escolar\n");
@@ -258,5 +266,4 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char studentNa
 
     fclose(arquivo);
     mysql_close(mysql);
-
 }
