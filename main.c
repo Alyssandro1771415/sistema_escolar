@@ -5,7 +5,7 @@
 #include <winsock2.h>
 #include "conectorC/include/mysql.h"
 
-struct aluno{
+struct aluno{ // POSTERIORMENTE, MODIFICAR PARA QUE OS DADOS DOS ALUNOS SEJAM IMPUTADOS
     int aluno_id;
     int turma_id;
     char turno[10];
