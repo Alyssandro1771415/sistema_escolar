@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -412,3 +413,5 @@ void registeringStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char sh
     printf("Inserção realizada com sucesso!\n");
 }
 
+=======
+>>>>>>> main
