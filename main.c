@@ -21,7 +21,7 @@ struct aluno * encontrar(char*);
 void inserir(void), buscar(void), salvar(void);
 void carregar(void), listar(void);
 void deletar(struct aluno **, struct aluno **);
-void armazrnar(struct aluno * i, struct aluno ** inicio, struct aluno ** ultimo);
+void armazrnar(struct aluno * i, struct aluno ** inicio, struct aluno ** fim);
 void inputs(char *, char *, int), display();
 int menu(void);
 
@@ -32,9 +32,9 @@ void main(void){
         switch(menu()){
             case 1: inserir(); // =)
                 break;
-            case 2: deletar(&inicio, &fim); // 
+            case 2: deletar(&inicio, &fim); // =)
                 break;
-            case 3: buscar();
+            case 3: buscar(); // 
                 break;
             case 4: listar();
                 break;
@@ -46,118 +46,6 @@ void main(void){
                 break;                
         }
     }
-}
-
-void inserir(void){
-    struct aluno *info;
-
-    while(1){
-        info =(struct aluno *)malloc(sizeof(lista));
-        if(!info){
-        printf("\nsem memoria");
-        return;
-        }
-
-        inputs("Insira o NOME do aluno: ", info->aluno_nome, 51);
-            if(!info->aluno_nome[0]) break;
-        inputs("Insira o TURNO do aluno: ", info->turno, 20);
-        inputs("Insira a TURMA do aluno: ", info->turma, 20);
-        inputs("Insira o numero da MATRICULA do aluno: ", info->matricula, 20);
-
-        armazenar(info, &inicio, &fim);
-    }   // LAÇO DE ENTRADA
-}
-
-void deletar(struct aluno ** inicio, struct aluno ** fim){
-    struct aluno * info, *encontrar();
-    char s[51];
-
-    printf("Insira o nome: ", s, 30);
-    info = encontrar(s);
-        if (*inicio == info) {
-            *inicio = info->prox;
-            if(*inicio) (*inicio)-> prox = NULL;
-            else *fim = NULL;
-        } else {
-            info ->
-}
-}
-
-void armazenar( struct aluno * i, struct aluno ** inicio, struct aluno ** fim){
-    struct aluno *anterior, *pont;
-
-    if(*fim == NULL){
-        i -> prox = NULL;
-        i -> aux = NULL;
-        *fim = i;
-        *inicio = i;
-        return;
-    }
-    pont = *inicio; // TOPO DA LISTA
-
-    anterior = NULL;
-    while(pont){
-        if(strcmp(pont->aluno_nome, i->aluno_nome) < 0) {
-            anterior = pont;
-            pont = pont->prox;
-        }else{
-            if(pont->aux){
-                pont->aux->prox = i;
-                i->prox = pont;
-                i->aux = pont->aux;
-                pont->aux = i;
-                return;
-            }
-            i->prox = pont; // NOVO PRIMEIRO ELEMENTO
-            i->aux = NULL;
-            pont->aux = i;
-            *inicio = i;
-            return;
-        }
-    }
-    anterior->prox = i; // insere no fim
-    i->prox = NULL;
-    i->aux = anterior;
-    *fim = i;
-}
-
-struct aluno *encontrar(char *aluno_nome){
-    struct aluno *info;
-    info = inicio;
-    while(info){
-        if(!strcmp(aluno_nome, info->aluno_nome)) return info;
-        info = info->prox; 
-    } 
-}
-// struct no{
-//     struct aluno info;
-//     struct no*prox;
-//     struct no*ant; 
-// };
-
-// struct lista{
-//     struct no*inicio;
-//     struct no*fim;
-// };
-
-// void inic_lista(struct lista*lista);
-
-// int lista_vazia(struct lista*lista);
-
-// void inserir_aluno(struct lista*lista, struct aluno aluno);
-
-// void limpar_lista(struct lista*lista);
-
-void pesq_aluno();
-
-menu(void);
-
-int main(){
-    // struct lista lista_dos_alunos;
-    // inic_lista(&lista_dos_alunos);
-    menu();
-
-    return 0;
 }
 
 // NOVO MENU
@@ -181,44 +69,135 @@ menu(void){
     return num;
 }
 
-// void inic_lista(struct lista*lista){
-//     lista->inicio = NULL;
-//     lista->fim = NULL;'
-// }
+void inserir(void){
+    struct aluno *info;
 
-// int lista_vazia(struct lista*lista){
-//     return lista->inicio == NULL;
-// }
+    while(1){
+        info =(struct aluno *)malloc(sizeof(lista));
+        if(!info){
+        printf("\nsem memoria");
+        return;
+        }
 
-// void inserir_aluno(struct lista*lista, struct aluno aluno){
-//     struct no*novo_no = (struct no*)malloc(sizeof(struct no));
-//     novo_no->info = aluno;
-//     novo_no->prox = NULL;
+        inputs("Insira o NOME do aluno: ", info->aluno_nome, 51);
+            if(!info->aluno_nome[0]) break;
+        inputs("Insira o TURNO do aluno: ", info->turno, 20);
+        inputs("Insira a TURMA do aluno: ", info->turma, 20);
+        inputs("Insira o numero da MATRICULA do aluno: ", info->matricula, 20);
 
-//     if(lista_vazia(lista)){
-//         novo_no->ant = NULL;
-//         lista->inicio = novo_no;
-//         lista->fim = novo_no;
-//     }else{
-//         novo_no->ant = lista->fim;
-//         lista->fim->prox = novo_no;
-//         lista->fim = novo_no;
-//     }
-// }
+        armazenar(info, &inicio, &fim);
+    }   // LAÇO DE ENTRADA
+}
 
-// void limpar_lista(struct lista*lista){
-//     struct no*atual = lista->inicio;
-//     while (atual != NULL){
-//         struct no*temp = atual;
-//         atual = atual->prox;
-//         free(temp);
-//     }
+void inputs(char * prompt, char * s, int contador){
+    char pont[255];
 
-//     lista->inicio = NULL;
-//     lista->fim = NULL;
-// }
+    do{
+        printf(prompt);
+        gets(pont);
+        if(strlen(pont) > contador) 
+            printf("\nnome muito longo\n");
+    }while(strlen(pont) > contador);
+    strcpy(s, pont);
+}
 
-// void pesq_aluno(void){
-//     char nome[40];
-//     struct *info, *encontrar();
-// }
+void armazenar( struct aluno * i, struct aluno ** inicio, struct aluno ** fim){
+    struct aluno *ant, *pont;
+
+    if(*fim == NULL){
+        i -> prox = NULL;
+        i -> ant = NULL;
+        *fim = i;
+        *inicio = i;
+        return;
+    }
+    pont = *inicio; // TOPO DA LISTA
+
+    ant = NULL;
+    while(pont){
+        if(strcmp(pont->aluno_nome, i->aluno_nome) < 0) {
+            ant = pont;
+            pont = pont->prox;
+        }else{
+            if(pont->ant){
+                pont->ant->prox = i;
+                i->prox = pont;
+                i->ant = pont->ant;
+                pont->ant = i;
+                return;
+            }
+            i->prox = pont; // NOVO PRIMEIRO ELEMENTO
+            i->ant = NULL;
+            pont->ant = i;
+            *inicio = i;
+            return;
+        }
+    }
+    ant->prox = i; // insere no fim
+    i->prox = NULL;
+    i->ant = ant;
+    *fim = i;
+}
+
+void deletar(struct aluno ** inicio, struct aluno ** fim){
+    struct aluno * info, *encontrar();
+    char s[51];
+
+    printf("Insira o nome: ", s, 30);
+    info = encontrar(s);
+    if(info){
+        if (*inicio == info) {
+            *inicio = info->prox;
+            if(*inicio) (*inicio) -> ant = NULL;
+            else *fim = NULL;
+        }else{
+            info -> ant -> prox = info -> prox;
+            if(info!=*fim)
+                info -> prox -> ant = info -> ant;
+            else
+                *fim = info -> ant;
+        }
+        free(info); // DEVOLVE MEMÓRIA PARA O SISTEMA
+    }
+}
+
+struct aluno *encontrar(char *aluno_nome){
+    struct aluno *info;
+    info = inicio;
+    while(info){
+        if(!strcmp(aluno_nome, info->aluno_nome)) return info;
+        info = info->prox; 
+    } 
+}
+
+void listar(void){
+    struct aluno * info;
+
+    info = inicio; 
+    while(info){
+        display(info);
+        info = info -> prox; // OBTENDO O PROX ENDEREÇO
+    }
+    printf("\n\n");
+}
+
+void display(struct aluno * info){
+    printf("%s\n", info -> aluno_nome);
+    printf("%s\n", info -> turno);
+    printf("%s\n", info -> turma);
+    printf("%s\n", info -> matricula);
+    printf("%s\n\n");
+}
+
+void buscar(void){
+    char aluno_nome[51];
+    struct aluno *info, *encontrar();
+
+    printf("Nome do aluno: ");
+    gets(aluno_nome);
+    info = encontrar(aluno_nome);
+    if(!info)
+        printf("Nenhum resultado\n");
+    else
+        display(info);
+}
