@@ -5,13 +5,12 @@
 #include <winsock2.h>
 #include "conectorC/include/mysql.h"
 
-struct aluno{ // POSTERIORMENTE, MODIFICAR PARA QUE OS DADOS DOS ALUNOS SEJAM IMPUTADOS
+struct aluno{ 
     char aluno_nome[51];
     char turno[20];
     char turma[20];
     char matricula[20];
-    struct aluno*prox;
-    struct aluno*ant;
+    struct aluno*proximo;
 } lista;
 
 struct aluno * inicio;
@@ -21,20 +20,20 @@ struct aluno * encontrar(char*);
 void inserir(void), buscar(void), salvar(void);
 void carregar(void), listar(void);
 void deletar(struct aluno **, struct aluno **);
-void armazrnar(struct aluno * i, struct aluno ** inicio, struct aluno ** fim);
+void armazenar(struct aluno * aux, struct aluno ** inicio, struct aluno ** fim);
 void inputs(char *, char *, int), display();
 int menu(void);
 
-void main(void){
+int main(void){
     inicio = fim = NULL;
 
     while(1){
         switch(menu()){
-            case 1: inserir(); // =)
+            case 1: inserir(); 
                 break;
-            case 2: deletar(&inicio, &fim); // =)
+            case 2: deletar(&inicio, &fim); 
                 break;
-            case 3: buscar(); // 
+            case 3: buscar(); 
                 break;
             case 4: listar();
                 break;
@@ -43,13 +42,16 @@ void main(void){
             case 6: carregar();
                 break;
             case 7: exit(0);
-                break;                
+                break;    
+            default:
+                printf("Insira uma opcao valida\n");      
+                return 0;      
         }
     }
+    return 0;
 }
 
-// NOVO MENU
-menu(void){
+int menu(void){
     char opcao[3];
     int num;
 
@@ -62,9 +64,9 @@ menu(void){
     printf("7. Sair\n");
     do{
         printf("\nEscolha: ");
-        gets(opcao);
+        fgets(opcao, sizeof(opcao), stdin);
         num = atoi(opcao);
-    }while(num<0 || num>7);
+    }while(num<1 || num>7);
 
     return num;
 }
@@ -94,80 +96,87 @@ void inputs(char * prompt, char * s, int contador){
 
     do{
         printf(prompt);
-        gets(pont);
+        fgets(pont, sizeof(pont), stdin);
+        pont[strcspn(pont, "\n")] = '\0';
+        *pont = atoi(pont);
+
         if(strlen(pont) > contador) 
-            printf("\nnome muito longo\n");
+            printf("\nNome muito longo\n");
+
     }while(strlen(pont) > contador);
     strcpy(s, pont);
 }
 
-void armazenar( struct aluno * i, struct aluno ** inicio, struct aluno ** fim){
+void armazenar( struct aluno * aux, struct aluno ** inicio, struct aluno ** fim){
     struct aluno *ant, *pont;
 
     if(*fim == NULL){
-        i -> prox = NULL;
-        i -> ant = NULL;
-        *fim = i;
-        *inicio = i;
+        aux -> proximo = NULL;
+        aux -> ant = NULL;
+        *fim = aux;
+        *inicio = aux;
         return;
     }
     pont = *inicio; // TOPO DA LISTA
 
     ant = NULL;
     while(pont){
-        if(strcmp(pont->aluno_nome, i->aluno_nome) < 0) {
+        if(strcmp(pont->aluno_nome, aux->aluno_nome) < 0) {
             ant = pont;
-            pont = pont->prox;
+            pont = pont->proximo;
         }else{
             if(pont->ant){
-                pont->ant->prox = i;
-                i->prox = pont;
-                i->ant = pont->ant;
-                pont->ant = i;
+                pont->ant->proximo = aux;
+            aux->                = pont;
+                aux->ant = pont->ant;
+                pont->ant = aux;
                 return;
             }
-            i->prox = pont; // NOVO PRIMEIRO ELEMENTO
-            i->ant = NULL;
-            pont->ant = i;
-            *inicio = i;
+            aux->proximo = pont; // NOVO PRIMEIRO ELEMENTO
+            aux->ant = NULL;
+            pont->ant = aux;
+            *inicio = aux;
             return;
         }
     }
-    ant->prox = i; // insere no fim
-    i->prox = NULL;
-    i->ant = ant;
-    *fim = i;
+    ant->proximo = aux; // insere no fim
+    aux->proximo = NULL;
+    aux->ant = ant;
+    *fim = aux;
 }
 
-void deletar(struct aluno ** inicio, struct aluno ** fim){
-    struct aluno * info, *encontrar();
-    char s[51];
+// void deletar(struct aluno ** inicio, struct aluno ** fim){
+//     struct aluno * info, *encontrar();
+//     char s[51];
+//     printf("Insira o nome:\n");
+//     info = encontrar(s);
+//     if(info){
+//         if (*inicio == info) {
+//             *inicio = info->proximo;
+//             if(*inicio) (*inicio) -> ant = NULL;
+//             else *fim = NULL;
+//         }else{
+//             info -> ant -> proximo = info -> proximo;
+//             if(info!=*fim)
+//                 info -> proximo -> ant = info -> ant;
+//             else
+//                 *fim = info -> ant;
+//         }
+//         free(info); // DEVOLVE MEMÓRIA PARA O SISTEMA
+//     }
+// }
 
-    printf("Insira o nome: ", s, 30);
-    info = encontrar(s);
-    if(info){
-        if (*inicio == info) {
-            *inicio = info->prox;
-            if(*inicio) (*inicio) -> ant = NULL;
-            else *fim = NULL;
-        }else{
-            info -> ant -> prox = info -> prox;
-            if(info!=*fim)
-                info -> prox -> ant = info -> ant;
-            else
-                *fim = info -> ant;
+struct aluno* encontrar(char* aluno_nome) {
+    struct aluno* info = inicio;
+
+    while (info != NULL) {
+        if (strcmp(aluno_nome, info->aluno_nome) == 0) {
+            return info;
         }
-        free(info); // DEVOLVE MEMÓRIA PARA O SISTEMA
+        info = info->proximo;
     }
-}
 
-struct aluno *encontrar(char *aluno_nome){
-    struct aluno *info;
-    info = inicio;
-    while(info){
-        if(!strcmp(aluno_nome, info->aluno_nome)) return info;
-        info = info->prox; 
-    } 
+    return NULL;  // RETORNA NULL CASO NÃO SEJA ENCONTRADO
 }
 
 void listar(void){
@@ -176,17 +185,17 @@ void listar(void){
     info = inicio; 
     while(info){
         display(info);
-        info = info -> prox; // OBTENDO O PROX ENDEREÇO
+        info = info -> proximo; // OBTENDO O proximo ENDEREÇO     
     }
     printf("\n\n");
 }
 
-void display(struct aluno * info){
-    printf("%s\n", info -> aluno_nome);
-    printf("%s\n", info -> turno);
-    printf("%s\n", info -> turma);
-    printf("%s\n", info -> matricula);
-    printf("%s\n\n");
+void display(struct aluno* info) {
+    printf("Nome: %s\n", info->aluno_nome);
+    printf("Turno: %s\n", info->turno);
+    printf("Turma: %s\n", info->turma);
+    printf("Matricula: %s\n", info->matricula);
+    printf("\n");
 }
 
 void buscar(void){
