@@ -21,9 +21,21 @@ void obterNomeTurno(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int classID,
 void obterNotas(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int studentID, float grades[8]);
 void obterMedias(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int studentID, float averages[2]);
 void searchStudent(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row);
+void novos_aluno(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8]);
+void insercao_encadeada(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row);
+void limpar_lista();
 
 int opcao_tu;
 char shift[8];
+struct aluno
+{
+    char aluno_nome[100];
+    int class_ID;
+    struct aluno *proximo;
+};
+struct aluno *inicio;
+struct aluno *fim;
+
 MYSQL *mysql;
 MYSQL_RES *result;
 MYSQL_ROW row;
@@ -249,7 +261,9 @@ void cadastrar()
         {
         case 1:
             system("cls");
-            registeringStudents(mysql, result, row, shift);
+            novos_aluno(mysql, result, row, shift);
+            insercao_encadeada(mysql, result, row);
+            limpar_lista();
             system("pause");
             break;
         case 2:
@@ -680,4 +694,108 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int studentID)
 
     fclose(arquivo);
     mysql_close(mysql);
+}
+
+void novos_aluno(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8])
+{
+    char studentName[100];
+    char className[20];
+    int classID;
+    char query[200];
+    char continuar;
+
+    do
+    {
+        printf("Insira o nome do estudante: ");
+        scanf(" %[^\n]", studentName);
+
+        printf("Insira a série do aluno: ");
+        scanf(" %[^\n]", className);
+
+        sprintf(query, "SELECT turma_id FROM turmas WHERE nome_turma = '%s' AND turno = '%s'", className, shift);
+
+        if (mysql_query(mysql, query) == 0)
+        {
+            result = mysql_store_result(mysql);
+
+            if (result != NULL)
+            {
+                if ((row = mysql_fetch_row(result)) != NULL)
+                {
+                    sscanf(row[0], "%d", &classID);
+                }
+                mysql_free_result(result);
+            }
+        }
+        else
+        {
+            printf("Erro ao executar a consulta.\n");
+            return;
+        }
+
+        struct aluno *novo_aluno = (struct aluno *)malloc(sizeof(struct aluno));
+        if (novo_aluno == NULL)
+        {
+            printf("Erro ao alocar memória para o novo aluno.\n");
+            return;
+        }
+
+        strcpy(novo_aluno->aluno_nome, studentName);
+        novo_aluno->class_ID = classID;
+
+        novo_aluno->proximo = NULL;
+
+        if (inicio == NULL)
+        {
+            inicio = novo_aluno;
+            fim = novo_aluno;
+        }
+        else
+        {
+            fim->proximo = novo_aluno;
+            fim = novo_aluno;
+        }
+
+        printf("Deseja adicionar outro aluno? (S/N): ");
+        scanf(" %c", &continuar);
+    } while (continuar == 'S' || continuar == 's');
+}
+
+void insercao_encadeada(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row)
+{
+
+    char query[200];
+
+    struct aluno *atual = inicio;
+    while (atual != NULL)
+    {
+
+        sprintf(query, "INSERT INTO aluno (nome_aluno, turma_id) VALUES ('%s', '%i')", atual->aluno_nome, atual->class_ID);
+
+        if (mysql_query(mysql, query) != 0)
+        {
+            fprintf(stderr, "Erro ao executar o registro: %s\n", mysql_error(mysql));
+        }
+        else
+        {
+            printf("Inserção realizada com sucesso!\n");
+            printf("Nome: %s\n", atual->aluno_nome);
+            printf("ID da turma: %i", atual->class_ID);
+            printf("\n");
+        }
+
+        atual = atual->proximo;
+    }
+}
+
+void limpar_lista()
+{
+    struct aluno *atual = inicio;
+    while (atual != NULL)
+    {
+        struct aluno *proximo = atual->proximo;
+        free(atual);
+        atual = proximo;
+    }
+    inicio = NULL;
 }
