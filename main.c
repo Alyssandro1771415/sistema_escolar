@@ -96,7 +96,6 @@ int main()
     return 0;
 }
 
-
 void showdata()
 {
     int diaatual, mesatual, anoatual;
