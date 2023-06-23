@@ -16,7 +16,7 @@ struct aluno *inicio;
 struct aluno *fim;
 
 void novo_aluno(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8]);
-void listar_alunos(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row);
+void inserçao_encadeada(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row);
 void limpar_lista();
 
 MYSQL *mysql;
@@ -30,7 +30,7 @@ int main()
     mysql_real_connect(mysql, "localhost", "root", "", "dados_escolares", 0, NULL, 0);
 
     novo_aluno(mysql, result, row, "noite");
-    listar_alunos(mysql, result, row);
+    inserçao_encadeada(mysql, result, row);
     limpar_lista();
 
     return 0;
@@ -101,7 +101,7 @@ void novo_aluno(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8])
     } while (continuar == 'S' || continuar == 's');
 }
 
-void listar_alunos(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row)
+void inserçao_encadeada(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row)
 {
 
     char query[200];
