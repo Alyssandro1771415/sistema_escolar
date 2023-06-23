@@ -5,74 +5,135 @@
 #include <winsock2.h>
 #include "conectorC/include/mysql.h"
 
-struct aluno{
+struct aluno
+{
     char aluno_nome[51];
-    char turno[20];
-    char turma[20];
-    char matricula[20];
-    struct aluno * proximo;
+    int class_ID;
+    struct aluno *proximo;
 };
 
-struct aluno * inicio;
-struct aluno * fim;
+struct aluno *inicio;
+struct aluno *fim;
 
-void novo_aluno(const char * nome, const char * turno, const char * turma, const char * matricula);
-void listar_alunos();
+void novo_aluno(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8]);
+void listar_alunos(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row);
 void limpar_lista();
 
-int main(){
-    // EXEMPLOS: (CRIAR UMA FUNÇÃO EXPECÍFICA PARA INSERIR OS DADOS DO MYSQL)
-    novo_aluno("Zé Lucas", "Manhã", "A", "123456");
-    novo_aluno("Alyssandersson", "Noite", "B", "666999");
-    novo_aluno("Zé Tom", "Tarde", "C", "000000");
+MYSQL *mysql;
+MYSQL_RES *result;
+MYSQL_ROW row;
 
-    listar_alunos();
+int main()
+{
 
+    mysql = mysql_init(NULL);
+    mysql_real_connect(mysql, "localhost", "root", "", "dados_escolares", 0, NULL, 0);
+
+    novo_aluno(mysql, result, row, "noite");
+    listar_alunos(mysql, result, row);
     limpar_lista();
 
     return 0;
 }
 
-void novo_aluno(const char * nome, const char * turno, const char * turma, const char * matricula){
-    struct aluno * novo_aluno = (struct aluno *) malloc(sizeof(struct aluno));
-    if(novo_aluno == NULL){
-        printf("Erro ao alocar memória para o novo aluno.\n");
-        return;
-    }
+void novo_aluno(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8])
+{
+    char studentName[100];
+    char className[20];
+    int classID;
+    char query[200];
+    char continuar;
 
-    strcpy(novo_aluno->aluno_nome, nome);
-    strcpy(novo_aluno->turno, turno);
-    strcpy(novo_aluno->turma, turma);
-    strcpy(novo_aluno->matricula, matricula);
-    novo_aluno->proximo = NULL;
+    do
+    {
+        printf("Insira o nome do estudante: ");
+        scanf(" %[^\n]", studentName);
 
-    if(inicio == NULL){
-        inicio = novo_aluno;
-    }else{
-        struct aluno * atual = inicio;
-        while(atual->proximo != NULL){
-            atual = atual->proximo;
+        printf("Insira a série do aluno: ");
+        scanf(" %[^\n]", className);
+
+        sprintf(query, "SELECT turma_id FROM turmas WHERE nome_turma = '%s' AND turno = '%s'", className, shift);
+
+        if (mysql_query(mysql, query) == 0)
+        {
+            result = mysql_store_result(mysql);
+
+            if (result != NULL)
+            {
+                if ((row = mysql_fetch_row(result)) != NULL)
+                {
+                    sscanf(row[0], "%d", &classID);
+                }
+                mysql_free_result(result);
+            }
         }
-        atual->proximo = novo_aluno;
-    }
+        else
+        {
+            printf("Erro ao executar a consulta.\n");
+            return;
+        }
+
+        struct aluno *novo_aluno = (struct aluno *)malloc(sizeof(struct aluno));
+        if (novo_aluno == NULL)
+        {
+            printf("Erro ao alocar memória para o novo aluno.\n");
+            return;
+        }
+
+        strcpy(novo_aluno->aluno_nome, studentName);
+        novo_aluno->class_ID = classID;
+
+        novo_aluno->proximo = NULL;
+
+        if (inicio == NULL)
+        {
+            inicio = novo_aluno;
+            fim = novo_aluno;
+        }
+        else
+        {
+            fim->proximo = novo_aluno;
+            fim = novo_aluno;
+        }
+
+        printf("Deseja adicionar outro aluno? (S/N): ");
+        scanf(" %c", &continuar);
+    } while (continuar == 'S' || continuar == 's');
 }
 
-void listar_alunos(){
-    struct aluno * atual = inicio;
-    while (atual != NULL){
-        printf("Nome: %s\n", atual->aluno_nome);
-        printf("Turno: %s\n", atual->turno);
-        printf("Turma: %s\n", atual->turma);
-        printf("Matrícula: %s\n", atual->matricula);
-        printf("\n");
+void listar_alunos(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row)
+{
+
+    char query[200];
+
+    struct aluno *atual = inicio;
+    while (atual != NULL)
+    {
+
+        sprintf(query, "INSERT INTO aluno (nome_aluno, turma_id) VALUES ('%s', '%i')", atual->aluno_nome, atual->class_ID);
+
+        if (mysql_query(mysql, query) != 0)
+        {
+            fprintf(stderr, "Erro ao executar o registro: %s\n", mysql_error(mysql));
+        }
+        else
+        {
+            printf("Inserção realizada com sucesso!\n");
+            printf("Nome: %s\n", atual->aluno_nome);
+            printf("ID da turma: %i", atual->class_ID);
+            printf("\n");
+        }
+
         atual = atual->proximo;
     }
 }
 
-void limpar_lista(){
-    struct aluno * atual = inicio;
-    while (atual != NULL){
-        struct aluno * proximo = atual->proximo;
+void limpar_lista()
+{
+    struct aluno *atual = inicio;
+    while (atual != NULL)
+    {
+        struct aluno *proximo = atual->proximo;
         free(atual);
         atual = proximo;
     }
