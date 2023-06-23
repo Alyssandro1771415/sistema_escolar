@@ -10,7 +10,6 @@ void tarde();
 void noite();
 void integral();
 void cadastrar();
-void procurar();
 void listClasses(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8]);
 void registeringClasses(MYSQL *mysql, char shift[8]);
 void listStudents(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, char shift[8], int classID);
