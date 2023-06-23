@@ -7,7 +7,7 @@
 
 struct aluno
 {
-    char aluno_nome[51];
+    char aluno_nome[100];
     int class_ID;
     struct aluno *proximo;
 };
