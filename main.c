@@ -272,7 +272,7 @@ void cadastrar()
         {
         case 1:
             system("cls");
-            novos_aluno(mysql, result, row, shift);
+            novos_alunos(mysql, result, row, shift);
             insercao_encadeada_alunos(mysql, result, row);
             limpar_lista_alunos();
             system("pause");
