@@ -25,6 +25,7 @@ void limpar_lista_alunos();
 void novas_turmas(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, const char shift[8]);
 void limpar_lista_turmas();
 void insercao_encadeada_turmas(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row);
+void alterarNotas(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int studentID);
 
 int opcao_tu;
 char shift[8];
@@ -66,7 +67,7 @@ int main()
         printf("\n\n\n\n\n\n\n\n\t\t\t\t\t\t==========MENU INICIAL==========\n\t\t\t\t\t\t--------------------------------\n");
         showdata();
         printf("\n\t\t\t\t\t\t-------------------------------- \n");
-        printf("\t\t\t\t\t\t1- Turnos \n\t\t\t\t\t\t2- Sair\n\t\t\t\t\t\t3- Procurar Aluno e Gerar Boletim\n");
+        printf("\t\t\t\t\t\t1- Turnos \n\t\t\t\t\t\t2- Sair\n\t\t\t\t\t\t3- Procurar Aluno, Gerar Boletim ou atualizar notas\n");
         printf("\t\t\t\t\t\t================================ \n");
         printf("\t\t\t\t\t\tescolha uma opcao: ");
         scanf("%d", &opcao_tp);
@@ -393,67 +394,43 @@ void obterNomeTurno(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int classID,
 }
 
 void obterNotas(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int studentID, float grades[8]) {
+    // Inicializa todas as notas como 0
+    for (int i = 0; i < 8; i++) {
+        grades[i] = 0.0;
+    }
+
     char query[200];
-    sprintf(query, "SELECT nota1, nota2, nota3, nota4 FROM notas WHERE aluno_id = '%i' AND semestre = '1'", studentID);
-    if (mysql_query(mysql, query)) {
+    sprintf(query, "SELECT nota1, nota2, nota3, nota4 FROM notas WHERE aluno_id = %d AND semestre IN (1, 2)", studentID);
+
+    if (mysql_query(mysql, query) != 0) {
         fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
         return;
     }
 
     result = mysql_store_result(mysql);
     if (result == NULL) {
-        fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
+        fprintf(stderr, "Erro ao armazenar o resultado da consulta: %s\n", mysql_error(mysql));
+        return;
+    }
+
+    if (mysql_num_rows(result) == 0) {
+        printf("Nenhuma nota encontrada para o aluno com ID %d.\n", studentID);
+        mysql_free_result(result);
         return;
     }
 
     row = mysql_fetch_row(result);
-    if (row == NULL) {
-        fprintf(stderr, "Dados não obtidos.\n");
-        mysql_free_result(result);
 
-        for (int i = 0; i < 8; i++) {
-            grades[i] = 0.0f;
+    // Armazena as notas encontradas no array grades
+    for (int i = 0; i < mysql_num_fields(result); i++) {
+        if (row[i] != NULL) {
+            grades[i] = atof(row[i]);
         }
-
-        return;
-    }
-
-    for (int i = 0; i < 4; i++) {
-        sscanf(row[i], "%f", &grades[i]);
-    }
-
-    mysql_free_result(result);
-
-    sprintf(query, "SELECT nota1, nota2, nota3, nota4 FROM notas WHERE aluno_id = '%i' AND semestre = '2'", studentID);
-    if (mysql_query(mysql, query)) {
-        fprintf(stderr, "Erro ao executar a consulta: %s\n", mysql_error(mysql));
-        return;
-    }
-
-    result = mysql_store_result(mysql);
-    if (result == NULL) {
-        fprintf(stderr, "Erro ao obter resultados: %s\n", mysql_error(mysql));
-        return;
-    }
-
-    row = mysql_fetch_row(result);
-    if (row == NULL) {
-        fprintf(stderr, "Dados não obtidos.\n");
-        mysql_free_result(result);
-
-        for (int i = 4; i < 8; i++) {
-            grades[i] = 0.0f;
-        }
-
-        return;
-    }
-
-    for (int i = 0; i < 4; i++) {
-        sscanf(row[i], "%f", &grades[i + 4]);
     }
 
     mysql_free_result(result);
 }
+
 
 void obterMedias(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int studentID, float averages[2]) {
     char query[200];
@@ -567,7 +544,7 @@ void searchStudent(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row){
     
     printf("---------------------------\n\n\n");
 
-    printf("1- Imprimir Boletim\n2- Voltar\n");
+    printf("1- Imprimir Boletim\n2- Atualizar Notas\n3- Voltar\n");
     scanf("%i", &myOpt);
 
     switch (myOpt)
@@ -579,8 +556,12 @@ void searchStudent(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row){
         gerarBoletim(mysql, result, row, studentID);
 
         break;
-    
     case 2:
+        printf("Insira o id do aluno ao qual deseja atualizar as notas: ");
+        scanf("%i", &studentID);
+        alterarNotas(mysql, result, row, studentID);
+
+    case 3:
         break;
     }
     
@@ -588,7 +569,7 @@ void searchStudent(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row){
 }
 
 void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int studentID) {
-    
+
     float grades[8];
     float averages[2];
     char className[20];
@@ -597,9 +578,13 @@ void gerarBoletim(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int studentID)
     char studentName[100];
 
     obterNomeEstudante(mysql, result, row, studentID, studentName); 
+
     obterTurmaID(mysql, result, row, studentID, &classID);
+
     obterNomeTurno(mysql, result, row, classID, className, shift);
+
     obterNotas(mysql, result, row, studentID, grades);
+
     obterMedias(mysql, result, row, studentID, averages);
 
     FILE *arquivo = fopen("boletim.txt", "w");
@@ -831,5 +816,82 @@ void insercao_encadeada_turmas(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row)
         }
 
         atual = atual->proximo;
+    }
+}
+
+void alterarNotas(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int studentID) {
+
+    int opc_nota;
+    float nota;
+    char query[200];
+    int semestre;
+
+    printf("Semestre 1 ou 2:");
+    scanf("%i", &semestre);
+
+    printf("Deseja inserir/alterar qual das notas abaixo?\n");
+    printf("1 - 1° Nota\n");
+    printf("2 - 2° Nota\n");
+    printf("3 - 3° Nota\n");
+    printf("4 - 4° Nota\n");
+
+    scanf("%i", &opc_nota);
+
+    switch (opc_nota) {
+        case 1:
+            printf("Nota: ");
+            scanf("%f", &nota);
+
+            sprintf(query, "UPDATE notas SET nota1 = %f WHERE aluno_id = %i and semestre = %i", nota, studentID, semestre);
+
+            if (mysql_query(mysql, query) != 0) {
+                fprintf(stderr, "Erro ao executar o registro: %s\n", mysql_error(mysql));
+            } else {
+                printf("Inserção realizada com sucesso!\n");
+            }
+            break;
+
+        case 2:
+            printf("Nota: ");
+            scanf("%f", &nota);
+
+            sprintf(query, "UPDATE notas SET nota2 = %f WHERE aluno_id = %i and semestre = %i", nota, studentID, semestre);
+
+            if (mysql_query(mysql, query) != 0) {
+                fprintf(stderr, "Erro ao executar o registro: %s\n", mysql_error(mysql));
+            } else {
+                printf("Inserção realizada com sucesso!\n");
+            }
+            break;
+
+        case 3:
+            printf("Nota: ");
+            scanf("%f", &nota);
+
+            sprintf(query, "UPDATE notas SET nota3 = %f WHERE aluno_id = %i and semestre = %i", nota, studentID, semestre);
+
+            if (mysql_query(mysql, query) != 0) {
+                fprintf(stderr, "Erro ao executar o registro: %s\n", mysql_error(mysql));
+            } else {
+                printf("Inserção realizada com sucesso!\n");
+            }
+            break;
+
+        case 4:
+            printf("Nota: ");
+            scanf("%f", &nota);
+
+            sprintf(query, "UPDATE notas SET nota4 = %f WHERE aluno_id = %i and semestre = %i", nota, studentID, semestre);
+
+            if (mysql_query(mysql, query) != 0) {
+                fprintf(stderr, "Erro ao executar o registro: %s\n", mysql_error(mysql));
+            } else {
+                printf("Inserção realizada com sucesso!\n");
+            }
+            break;
+
+        default:
+            printf("Opção inválida!\n");
+            break;
     }
 }
