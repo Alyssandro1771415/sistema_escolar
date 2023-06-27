@@ -140,7 +140,7 @@ void manha()
         printf("\n\n\n\n\n\n\n\n\t\t\t\t\t\t==========MANHA==========\n\t\t\t\t\t\t-------------------------\n");
         showdata();
         printf("\n\t\t\t\t\t\t-------------------------\n");
-        printf("\t\t\t\t\t\t 1- Series\n\t\t\t\t\t\t 2- Cadastrar\n\t\t\t\t\t\t 3- Voltar\n");
+        printf("\t\t\t\t\t\t 1- Series\n\t\t\t\t\t\t 2- Cadastrar\n\t\t\t\t\t\t 3- Voltar\n\t\t\t\t\t\t 4- Encerrar Programa\n");
         printf("\t\t\t\t\t\t========================\n");
         printf("\t\t\t\t\t\tescolha uma opcao: ");
         scanf("%d", &opcao_m);
@@ -159,7 +159,7 @@ void manha()
             main();
             break;
         }
-    } while (opcao_m != 6);
+    } while (opcao_m != 4);
 }
 
 void tarde()
@@ -171,7 +171,7 @@ void tarde()
         printf("\n\n\n\n\n\n\n\n\t\t\t\t\t\t==========TARDE==========\n\t\t\t\t\t\t-------------------------\n");
         showdata();
         printf("\n\t\t\t\t\t\t-------------------------\n");
-        printf("\t\t\t\t\t\t 1- Series\n\t\t\t\t\t\t 2- Cadastrar\n\t\t\t\t\t\t 3- Voltar\n");
+        printf("\t\t\t\t\t\t 1- Series\n\t\t\t\t\t\t 2- Cadastrar\n\t\t\t\t\t\t 3- Voltar\n\t\t\t\t\t\t 4- Encerrar Programa\n");
         printf("\t\t\t\t\t\t========================\n");
         printf("\t\t\t\t\t\tescolha uma opcao: ");
         scanf("%d", &opcao_t);
@@ -190,7 +190,7 @@ void tarde()
             main();
             break;
         }
-    } while (opcao_t != 6);
+    } while (opcao_t != 4);
 }
 
 void noite()
@@ -202,7 +202,7 @@ void noite()
         printf("\n\n\n\n\n\n\n\n\t\t\t\t\t\t==========NOITE==========\n\t\t\t\t\t\t-------------------------\n");
         showdata();
         printf("\n\t\t\t\t\t\t-------------------------\n");
-        printf("\t\t\t\t\t\t 1- Series\n\t\t\t\t\t\t 2- Cadastrar\n\t\t\t\t\t\t 3- Voltar\n");
+        printf("\t\t\t\t\t\t 1- Series\n\t\t\t\t\t\t 2- Cadastrar\n\t\t\t\t\t\t 3- Voltar\n\t\t\t\t\t\t 4- Encerrar Programa\n");
         printf("\t\t\t\t\t\t========================\n");
         printf("\t\t\t\t\t\tescolha uma opcao: ");
         scanf("%d", &opcao_n);
@@ -221,7 +221,7 @@ void noite()
             main();
             break;
         }
-    } while (opcao_n != 6);
+    } while (opcao_n != 4);
 }
 
 void integral()
@@ -233,7 +233,7 @@ void integral()
         printf("\n\n\n\n\n\n\n\n\t\t\t\t\t\t==========INTEGRAL==========\n\t\t\t\t\t\t-------------------------\n");
         showdata();
         printf("\n\t\t\t\t\t\t-------------------------\n");
-        printf("\t\t\t\t\t\t 1- Series\n\t\t\t\t\t\t 2- Cadastrar\n\t\t\t\t\t\t 3- Voltar\n");
+        printf("\t\t\t\t\t\t 1- Series\n\t\t\t\t\t\t 2- Cadastrar\n\t\t\t\t\t\t 3- Voltar\n\t\t\t\t\t\t 4- Encerrar Programa\n");
         printf("\t\t\t\t\t\t========================\n");
         printf("\t\t\t\t\t\tescolha uma opcao: ");
         scanf("%d", &opcao_i);
