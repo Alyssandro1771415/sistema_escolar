@@ -1,0 +1,14 @@
+# ninja log v5
+2	77	7223937354539824	CMakeFiles/Projeto_de_C.dir/primo_rico.c.obj	2330691ac68265e3
+83	275	7223937356495171	Projeto_de_C.exe	19438c991ee51d6d
+6	83	7223937354599659	CMakeFiles/Projeto_de_C.dir/despesa.c.obj	8645dfde41ca6c18
+10	81	7223937354579720	CMakeFiles/Projeto_de_C.dir/utilitario.c.obj	a030ac9c4b094326
+3	199	7224458888133232	CMakeFiles/Projeto_de_C.dir/despesa.c.obj	8645dfde41ca6c18
+200	373	7224458889831222	Projeto_de_C.exe	19438c991ee51d6d
+2	116	7224463609570842	CMakeFiles/Projeto_de_C.dir/primo_rico.c.obj	2330691ac68265e3
+9	129	7224463609702286	CMakeFiles/Projeto_de_C.dir/despesa.c.obj	8645dfde41ca6c18
+15	137	7224463609782097	CMakeFiles/Projeto_de_C.dir/utilitario.c.obj	a030ac9c4b094326
+137	360	7224463611971194	Projeto_de_C.exe	19438c991ee51d6d
+7	100	7224465393633056	CMakeFiles/Projeto_de_C.dir/primo_rico.c.obj	2330691ac68265e3
+2	119	7224465393823945	CMakeFiles/Projeto_de_C.dir/despesa.c.obj	8645dfde41ca6c18
+119	247	7224465395047277	Projeto_de_C.exe	19438c991ee51d6d

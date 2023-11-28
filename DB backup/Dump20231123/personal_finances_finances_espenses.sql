@@ -1,6 +1,6 @@
 -- MariaDB dump 10.19  Distrib 10.4.28-MariaDB, for Win64 (AMD64)
 --
--- Host: localhost    Database: dados_escolares
+-- Host: localhost    Database: personal_finances
 -- ------------------------------------------------------
 -- Server version	10.4.28-MariaDB
 
@@ -16,29 +16,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `turmas`
+-- Table structure for table `finances_espenses`
 --
 
-DROP TABLE IF EXISTS `turmas`;
+DROP TABLE IF EXISTS `finances_espenses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `turmas` (
-  `turma_id` double NOT NULL AUTO_INCREMENT,
-  `nome_turma` char(20) DEFAULT NULL,
-  `ano_letivo` char(4) NOT NULL,
-  `turno` char(8) DEFAULT NULL,
-  PRIMARY KEY (`turma_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `finances_espenses` (
+  `espenses_description` varchar(200) DEFAULT NULL,
+  `espenses_dates` timestamp NOT NULL DEFAULT current_timestamp(),
+  `espenses_value` decimal(5,2) DEFAULT NULL,
+  `espenses_category` varchar(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `turmas`
+-- Dumping data for table `finances_espenses`
 --
 
-LOCK TABLES `turmas` WRITE;
-/*!40000 ALTER TABLE `turmas` DISABLE KEYS */;
-INSERT INTO `turmas` VALUES (1,'1 ano medio','2023','noite'),(2,'2 ano medio','2023','noite'),(3,'3 ano medio','2023','tarde'),(4,'4 ano fundamental','2023','manha'),(7,'5 ano fundamental','2023','integra'),(8,'9 ano fundamental','2023','manha');
-/*!40000 ALTER TABLE `turmas` ENABLE KEYS */;
+LOCK TABLES `finances_espenses` WRITE;
+/*!40000 ALTER TABLE `finances_espenses` DISABLE KEYS */;
+INSERT INTO `finances_espenses` VALUES ('sfdsfas','2023-11-23 17:07:19',10.00,'sdfds');
+/*!40000 ALTER TABLE `finances_espenses` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -50,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-16 15:45:49
+-- Dump completed on 2023-11-23 15:21:15
