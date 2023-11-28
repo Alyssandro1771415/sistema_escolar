@@ -431,7 +431,6 @@ void obterNotas(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int studentID, f
     mysql_free_result(result);
 }
 
-
 void obterMedias(MYSQL *mysql, MYSQL_RES *result, MYSQL_ROW row, int studentID, float averages[2]) {
     char query[200];
     sprintf(query, "SELECT media FROM media WHERE aluno_id = '%i' AND semestre = '1'", studentID);
