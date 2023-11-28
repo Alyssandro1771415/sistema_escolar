@@ -1,6 +1,8 @@
+CREATE DATABASE  IF NOT EXISTS `dados_escolares` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+USE `dados_escolares`;
 -- MariaDB dump 10.19  Distrib 10.4.28-MariaDB, for Win64 (AMD64)
 --
--- Host: localhost    Database: personal_finances
+-- Host: localhost    Database: dados_escolares
 -- ------------------------------------------------------
 -- Server version	10.4.28-MariaDB
 
@@ -16,31 +18,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `user_datas`
+-- Table structure for table `turmas`
 --
 
-DROP TABLE IF EXISTS `user_datas`;
+DROP TABLE IF EXISTS `turmas`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user_datas` (
-  `user_wage` decimal(6,2) DEFAULT NULL,
-  `percentage_food` decimal(6,2) DEFAULT NULL,
-  `percentage_transport` decimal(6,2) DEFAULT NULL,
-  `percentage_home` decimal(6,2) DEFAULT NULL,
-  `percentage_educacion` decimal(6,2) DEFAULT NULL,
-  `percentage_health` decimal(6,2) DEFAULT NULL,
-  `percentage_leisure` decimal(6,2) DEFAULT NULL,
-  `percentage_others` decimal(6,2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `turmas` (
+  `turma_id` double NOT NULL AUTO_INCREMENT,
+  `nome_turma` char(20) DEFAULT NULL,
+  `ano_letivo` char(4) NOT NULL,
+  `turno` char(8) DEFAULT NULL,
+  PRIMARY KEY (`turma_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user_datas`
+-- Dumping data for table `turmas`
 --
 
-LOCK TABLES `user_datas` WRITE;
-/*!40000 ALTER TABLE `user_datas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_datas` ENABLE KEYS */;
+LOCK TABLES `turmas` WRITE;
+/*!40000 ALTER TABLE `turmas` DISABLE KEYS */;
+INSERT INTO `turmas` VALUES (4,'1 ano medio','2023','Noite'),(5,'2 ano medio','2023','noite'),(6,'3 ano medio','2023','noite'),(7,'1 ano fundamental','2023','noite');
+/*!40000 ALTER TABLE `turmas` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-23 15:21:15
+-- Dump completed on 2023-11-28 20:08:35

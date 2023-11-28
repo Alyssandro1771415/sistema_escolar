@@ -1,6 +1,8 @@
+CREATE DATABASE  IF NOT EXISTS `dados_escolares` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+USE `dados_escolares`;
 -- MariaDB dump 10.19  Distrib 10.4.28-MariaDB, for Win64 (AMD64)
 --
--- Host: localhost    Database: personal_finances
+-- Host: localhost    Database: dados_escolares
 -- ------------------------------------------------------
 -- Server version	10.4.28-MariaDB
 
@@ -16,28 +18,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `finances_espenses`
+-- Table structure for table `media`
 --
 
-DROP TABLE IF EXISTS `finances_espenses`;
+DROP TABLE IF EXISTS `media`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `finances_espenses` (
-  `espenses_description` varchar(200) DEFAULT NULL,
-  `espenses_dates` timestamp NOT NULL DEFAULT current_timestamp(),
-  `espenses_value` decimal(5,2) DEFAULT NULL,
-  `espenses_category` varchar(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `media` (
+  `media_id` double NOT NULL AUTO_INCREMENT,
+  `aluno_id` double NOT NULL,
+  `semestre` decimal(1,0) NOT NULL,
+  `media` float NOT NULL,
+  PRIMARY KEY (`media_id`),
+  CONSTRAINT `media_ibfk_1` FOREIGN KEY (`aluno_id`) REFERENCES `aluno` (`aluno_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `finances_espenses`
+-- Dumping data for table `media`
 --
 
-LOCK TABLES `finances_espenses` WRITE;
-/*!40000 ALTER TABLE `finances_espenses` DISABLE KEYS */;
-INSERT INTO `finances_espenses` VALUES ('sfdsfas','2023-11-23 17:07:19',10.00,'sdfds');
-/*!40000 ALTER TABLE `finances_espenses` ENABLE KEYS */;
+LOCK TABLES `media` WRITE;
+/*!40000 ALTER TABLE `media` DISABLE KEYS */;
+INSERT INTO `media` VALUES (1,15,1,8.75),(2,18,1,4),(4,18,2,2);
+/*!40000 ALTER TABLE `media` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-23 15:21:15
+-- Dump completed on 2023-11-28 20:08:34

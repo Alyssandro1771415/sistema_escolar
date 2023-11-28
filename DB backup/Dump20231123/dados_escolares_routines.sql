@@ -1,6 +1,8 @@
+CREATE DATABASE  IF NOT EXISTS `dados_escolares` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+USE `dados_escolares`;
 -- MariaDB dump 10.19  Distrib 10.4.28-MariaDB, for Win64 (AMD64)
 --
--- Host: localhost    Database: personal_finances
+-- Host: localhost    Database: dados_escolares
 -- ------------------------------------------------------
 -- Server version	10.4.28-MariaDB
 
@@ -15,7 +17,11 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Dumping routines for database 'personal_finances'
+-- Dumping events for database 'dados_escolares'
+--
+
+--
+-- Dumping routines for database 'dados_escolares'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -26,4 +32,4 @@
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-23 15:21:16
+-- Dump completed on 2023-11-28 20:08:35
